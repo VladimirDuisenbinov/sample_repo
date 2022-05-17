@@ -1,0 +1,63 @@
+version: "3.9"
+   
+services:
+  db:
+    image: postgres
+    container_name: sample_db
+    volumes:
+      - sample_prod_vol:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  django:
+    build:
+      context: ./backend
+      dockerfile: ./docker/django/Dockerfile
+      target: prod
+    container_name: sample_django
+    volumes:
+      - ./backend/src:/app
+      - sample_static_vol:/app/core/static
+    expose:
+      - 8000
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.envs/.global
+    command: /start
+
+  nginx:
+    build:
+      context: ./backend
+      dockerfile: ./docker/nginx/Dockerfile
+    container_name: sample_django_nginx
+    volumes:
+      - sample_static_vol:/app/core/static
+    ports:
+      - 8000:8000
+    depends_on:
+      - django
+
+  react:
+    build:
+      context: ./frontend
+      dockerfile: ./docker/Dockerfile
+      target: prod
+    container_name: sample_react
+    volumes:
+      - ./frontend:/web
+      - /web/node_modules
+    ports:
+      - 8080:8080
+    depends_on:
+      - django
+    env_file:
+      - ./frontend/.env
+    stdin_open: true
+    tty: true
+
+volumes:
+  sample_prod_vol: {}
+  sample_static_vol: {}

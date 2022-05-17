@@ -1,0 +1,9 @@
+-r base.txt
+
+# Debug
+django-debug-toolbar==3.2.1
+
+# Test
+pytest-django==4.5.2
+pytest-cov==3.0.0
+flake8==4.0.0

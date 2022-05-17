@@ -1,0 +1,12 @@
+# Base 
+psycopg2-binary==2.8.6
+requests==2.25.1
+
+# Django
+Django==3.1.10
+djangorestframework==3.12.4
+django-filter==2.4.0
+django-cors-headers==3.10.0
+
+# Other
+shortuuid==1.0.9
